@@ -39,11 +39,15 @@ public class BaseObject implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+
         if (!(obj instanceof BaseObject)) {
             return false;
         }
-        BaseObject other = (BaseObject) obj;
-        return (other.getId() != null) && (id != null) && (id.equals(other.getId()));
+        BaseObject bo = (BaseObject) obj;
+        return (bo.getId() != null) && (this.id != null) && (this.id.equals(bo.getId()));
     }
 
     @Override

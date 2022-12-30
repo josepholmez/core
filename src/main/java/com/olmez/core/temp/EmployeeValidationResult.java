@@ -1,6 +1,6 @@
-package com.olmez.core.mockdata;
+package com.olmez.core.temp;
 
-enum ValidationResult {
+enum EmployeeValidationResult {
     SUCCESS,
     NAME_NOT_VALID,
     EMAIL_NOT_VALID,
