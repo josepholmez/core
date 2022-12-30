@@ -20,7 +20,7 @@ public class CoreApplicationTest implements CommandLineRunner {
     }
 
     public void run(String... args) throws Exception {
-        log.info("Mya TEST application has started!");
+        log.info("Core TEST application has started!");
     }
 
     @Test

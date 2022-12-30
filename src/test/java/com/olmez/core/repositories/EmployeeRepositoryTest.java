@@ -12,14 +12,14 @@ import org.springframework.test.context.TestPropertySource;
 import com.olmez.core.CoreApplicationTest;
 import com.olmez.core.model.Employee;
 import com.olmez.core.services.TestRepoCleanerService;
-import com.olmez.core.utility.TestSource;
+import com.olmez.core.utility.TestUtility;
 
 /**
  * Test classes use test database!
  */
 @SpringBootTest(classes = CoreApplicationTest.class)
-@TestPropertySource(TestSource.TEST_PROP_SOURCE)
-@ActiveProfiles(TestSource.AC_PROFILE)
+@TestPropertySource(TestUtility.SOURCE_PROPERTIES)
+@ActiveProfiles(TestUtility.PROFILE)
 class EmployeeRepositoryTest {
 
 	@Autowired
