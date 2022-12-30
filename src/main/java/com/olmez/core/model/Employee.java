@@ -16,7 +16,7 @@ public class Employee extends BaseObject {
 
 	private String name;
 	private String email;
-	private int age;
+	private Integer age;
 	private String phone;
 	private LocalDate hiredOn;
 
