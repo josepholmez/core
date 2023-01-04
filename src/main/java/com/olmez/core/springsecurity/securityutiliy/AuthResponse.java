@@ -1,16 +1,16 @@
 package com.olmez.core.springsecurity.securityutiliy;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-public class SigninRequest {
+public class AuthResponse {
 
+    private String token;
     private String username;
     private String email;
-    private String password;
+    private String role;
+    private String errorMessage;
 
 }

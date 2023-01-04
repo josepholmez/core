@@ -28,7 +28,7 @@ public class User extends BaseObject {
 	private String timeZone;
 
 	public User(String username, String firstName, String lastName) {
-		this(username, firstName, lastName, username + "@noemail.com", UserType.REGULAR);
+		this(username, firstName, lastName, username + "@no-email.com", UserType.REGULAR);
 	}
 
 	public User(String username, String firstName, String lastName, String email) {
@@ -67,6 +67,10 @@ public class User extends BaseObject {
 	public static boolean isValid(User user) {
 		return !StringUtility.isEmpty(user.getUsername()) && !StringUtility.isEmpty(user.getFirstName())
 				&& !StringUtility.isEmpty(user.getLastName());
+	}
+
+	public String getRole() {
+		return userType.getRole();
 	}
 
 }
