@@ -11,7 +11,7 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MyAlgo {
+public class MorganStanley {
 
     // 1.MISSING NUMBER ******************************************
     public static int getMissingNumber(int[] list) {
@@ -100,30 +100,40 @@ public class MyAlgo {
         return list.remove(midObj);
     }
 
+    // 7.PALINDROME ******************************************
+    public static boolean isPalindrome(String word) {
+        if (word == null || word.isEmpty()) {
+            return false;
+        }
+        String str = word.toLowerCase(); // case sensitive
+        String reversed = new StringBuilder(str).reverse().toString();
+        return str.equals(reversed);
+    }
+
     // **************TEST**************TEST**************TEST**************TEST**************TEST**************TEST*/
     public static void main(String[] args) {
 
         // 1
         int[] list = { 1, 2, 3, 5 };
         int missing = getMissingNumber(list);
-        log.info("Missing number: " + missing);
+        log.info("Missing number: {}", missing);
 
         // 2
         int cnt = countSubstring("abc", "abcdabceabcfabcg");
-        log.info("Number of sub (abc): " + cnt);
+        log.info("Number of sub (abc): {}", cnt);
 
         // 3
         String result = orderTickes();
-        log.info("Ordered list: from->to: \n" + result);
+        log.info("Ordered list: from->to: \n{}", result);
 
         // 4
         int num = getMax(list);
-        log.info("Max number: " + num);
+        log.info("Max number: {}", num);
 
         // 5
         int[] mList = { 17, 5, 13, 8, 16, 1, 2 }; // 17, 16, 2
         List<Integer> maxList = getMaxAsItsRight(mList);
-        log.info("Max list: " + maxList);
+        log.info("Max list: {}", maxList);
 
         // 6
         LinkedList<String> lis = new LinkedList<>();
@@ -131,10 +141,11 @@ public class MyAlgo {
         lis.add("BB");
         lis.add("CC");
         var res = deleteMiddleElement(lis);
-        log.info("Middle element is deleted: " + res);
+        log.info("Middle element is deleted: {}", res);
 
         // 7
-        System.out.println("Hello Omer");
+        boolean res7 = isPalindrome("kayaK");
+        log.info("Palindrome: {}", res7);
     }
 
 }
