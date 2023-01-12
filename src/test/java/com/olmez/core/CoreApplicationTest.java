@@ -1,5 +1,7 @@
 package com.olmez.core;
 
+import lombok.extern.slf4j.Slf4j;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
@@ -7,11 +9,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import com.olmez.core.utility.TestUtility;
 
 @SpringBootApplication
-@AllArgsConstructor
 @Slf4j
 public class CoreApplicationTest implements CommandLineRunner {
 
@@ -19,13 +19,15 @@ public class CoreApplicationTest implements CommandLineRunner {
         SpringApplication.run(CoreApplicationTest.class, args);
     }
 
+
+    @Override
     public void run(String... args) throws Exception {
-        log.info("Core TEST application has started!");
+        log.info("Test app has started!");
     }
 
     @Test
-    void testBasic() {
-        var text = "text";
-        assertThat(text).isEqualTo("text");
+    void testBasic(){
+        String profile = TestUtility.PROFILE;
+        assertThat(profile).isEqualTo("test");
     }
 }

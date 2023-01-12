@@ -1,7 +1,9 @@
 package com.olmez.core.repositories;
 
-import java.time.LocalDate;
-
+import com.olmez.core.CoreApplicationTest;
+import com.olmez.core.model.CurrencyInfo;
+import com.olmez.core.services.TestRepoCleanerService;
+import com.olmez.core.utility.TestUtility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
-import com.olmez.core.CoreApplicationTest;
-import com.olmez.core.model.CurrencyInfo;
-import com.olmez.core.services.TestRepoCleanerService;
-import com.olmez.core.utility.TestUtility;
+import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -54,6 +53,7 @@ class CurrencyInfoRepositoryTest {
 		assertThat(infos).hasSize(3);
 		assertThat(infos.get(0)).isEqualTo(info2); // Dec 4
 		assertThat(infos.get(1)).isEqualTo(info); // Dec 3
+		assertThat(infos.get(2)).isEqualTo(info3); // Dec 2
 		assertThat(infos.get(2)).isEqualTo(info3); // Dec 2
 
 	}

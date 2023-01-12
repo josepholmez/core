@@ -1,11 +1,10 @@
 package com.olmez.core.repositories;
 
-import java.time.LocalDate;
-import java.util.List;
-
+import com.olmez.core.model.CurrencyInfo;
 import org.springframework.data.jpa.repository.Query;
 
-import com.olmez.core.model.CurrencyInfo;
+import java.time.LocalDate;
+import java.util.List;
 
 public interface CurrencyInfoRepository extends BaseObjectRepository<CurrencyInfo> {
 

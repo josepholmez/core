@@ -7,10 +7,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -24,7 +20,7 @@ public class FileUtility {
 	private static final ObjectMapper MAPPER = new ObjectMapper();
 	private static final int BUFFER_SIZE = 1024;
 
-	// READ FILE BASED ON JAVA CLASSESS*********************************************
+	// READ FILE BASED ON JAVA CLASSES *********************************************
 	/**
 	 * This allows reading the file given its url according to the class type
 	 * specified.
@@ -46,19 +42,8 @@ public class FileUtility {
 	}
 
 	private <T> T readFile(String sourceUrl, Class<T> objType) throws IOException, InterruptedException {
-		InputStream is = getResponseAsStream(sourceUrl);
+		InputStream is = HttpClientUtility.getResponseAsStream(sourceUrl);
 		return MAPPER.readValue(is, objType);
-	}
-
-	private InputStream getResponseAsStream(String url) throws IOException, InterruptedException {
-		HttpClient httpClient = HttpClient.newHttpClient();
-		HttpRequest request = HttpRequest.newBuilder()
-				.uri(URI.create(url))
-				.header("Accept", "application/json")
-				.GET()
-				.build();
-		HttpResponse<InputStream> response = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
-		return response.body();
 	}
 
 	// GENERATE FILE *************************************************************
