@@ -63,7 +63,7 @@ public class MorganStanley {
 
         String to = ticket.get(from);
         while (to != null) {
-            sb.append(from + " -> " + to + "\n");
+            sb.append(from + " -> " + to + ", ");
             from = to;
             to = ticket.get(from);
         }
@@ -76,8 +76,7 @@ public class MorganStanley {
         return list[list.length - 1];
     }
 
-    // 5.GET MAX LIST AS TO ITS RIGHT***// input: { 17, 5, 13, 8, 16, 1, 2 };
-    // Output: 17, 16, 2
+    // 5.GET MAX LIST AS TO ITS RIGHT ***
     public static List<Integer> getMaxAsItsRight(int[] list) {
 
         List<Integer> maxList = new ArrayList<>();
@@ -94,8 +93,8 @@ public class MorganStanley {
     }
 
     // 6.DELETE MIDDLE ELEMENT FROM A LIST ***************************
-    public static boolean deleteMiddleElement(LinkedList<String> list) {
-        int midIndex = list.size() / 2; // if list size is odd number
+    public static boolean deleteMiddleElement(List<String> list) {
+        int midIndex = list.size() / 2; // if list size is odd number and list is LinkedList
         String midObj = list.get(midIndex);
         return list.remove(midObj);
     }
@@ -110,42 +109,75 @@ public class MorganStanley {
         return str.equals(reversed);
     }
 
+    // 8. FIST NON-REPEATABLE CHAR ******************************
+    public static String findFirstNonRepeatableChar(String text) {
+        if (text == null || text.isEmpty()) {
+            return "No text";
+        }
+
+        char[] cList = text.toCharArray();
+        Map<Character, Integer> map = new HashMap<>();
+
+        for (var ch : cList) {
+            if (map.isEmpty()) {
+                map.put(ch, 1);
+            } else {
+                if (map.containsKey(ch)) {
+                    map.put(ch, map.get(ch) + 1);
+                } else {
+                    map.put(ch, 1);
+                }
+            }
+        }
+
+        for (var e : map.entrySet()) {
+            if (e.getValue() == 1) {
+                return String.valueOf(e.getKey());
+            }
+        }
+        return "No found non-repeatable char in " + text;
+    }
+
     // **************TEST**************TEST**************TEST**************TEST**************TEST**************TEST*/
     public static void main(String[] args) {
 
-        // 1
+        // 1.
         int[] list = { 1, 2, 3, 5 };
-        int missing = getMissingNumber(list);
-        log.info("Missing number: {}", missing);
+        int res1 = getMissingNumber(list);
+        log.info("01-Missing number: {}", res1);
 
-        // 2
-        int cnt = countSubstring("abc", "abcdabceabcfabcg");
-        log.info("Number of sub (abc): {}", cnt);
+        // 2.
+        int res2 = countSubstring("abc", "abcdabceabcfabcg");
+        log.info("02-Number of sub (abc): {}", res2);
 
-        // 3
-        String result = orderTickes();
-        log.info("Ordered list: from->to: \n{}", result);
+        // 3.
+        String res3 = orderTickes();
+        log.info("03-Ordered list: from->to: \n{}", res3);
 
-        // 4
-        int num = getMax(list);
-        log.info("Max number: {}", num);
+        // 4.
+        int res4 = getMax(list);
+        log.info("04-Max number: {}", res4);
 
-        // 5
-        int[] mList = { 17, 5, 13, 8, 16, 1, 2 }; // 17, 16, 2
-        List<Integer> maxList = getMaxAsItsRight(mList);
-        log.info("Max list: {}", maxList);
+        // 5.
+        int[] mList = { 17, 5, 13, 8, 16, 1, 2 }; // Output:17, 16, 2
+        List<Integer> res5 = getMaxAsItsRight(mList);
+        log.info("05-Max list: {}", res5);
 
-        // 6
-        LinkedList<String> lis = new LinkedList<>();
-        lis.add("AA");
-        lis.add("BB");
-        lis.add("CC");
-        var res = deleteMiddleElement(lis);
-        log.info("Middle element is deleted: {}", res);
+        // 6.
+        LinkedList<String> linked = new LinkedList<>();
+        linked.addAll(Arrays.asList("AA", "BB", "CC"));
+        var res6 = deleteMiddleElement(linked);
+        log.info("06-Middle element is deleted: {}", res6);
 
-        // 7
-        boolean res7 = isPalindrome("kayaK");
-        log.info("Palindrome: {}", res7);
+        // 7.
+        String word = "kayaK";
+        boolean res7 = isPalindrome(word);
+        log.info("07-Is {} a palindrome?: {}", word, res7);
+
+        // 8.
+        String text = "zzzzzbbbccccdehhhhiii";
+        String res8 = findFirstNonRepeatableChar(text);
+        log.info("08-In {}, first non-repeatable char: {}", text, res8);
     }
 
 }

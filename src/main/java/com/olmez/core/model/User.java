@@ -5,7 +5,7 @@ import jakarta.persistence.Entity;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators.PropertyGenerator;
 import com.olmez.core.model.enums.UserType;
-import com.olmez.core.utility.DateUtility;
+import com.olmez.core.utility.DateTimeUtility;
 import com.olmez.core.utility.StringUtility;
 
 import lombok.Getter;
@@ -57,7 +57,7 @@ public class User extends BaseObject {
 	}
 
 	public String getTimeZone() {
-		return (timeZone == null) ? DateUtility.DEFAULT_ZONE_ID_KEY : timeZone;
+		return (timeZone == null) ? DateTimeUtility.DEFAULT_ZONE_ID_KEY : timeZone;
 	}
 
 	public boolean isRegular() {

@@ -1,12 +1,17 @@
 package com.olmez.core.temp;
 
-public class Temp {
+import com.olmez.core.utility.DateTimeUtility;
 
-    private static int[] list = {};
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+public class Temp {
 
     public static void main(String[] args) {
 
-        System.out.println();
+        log.info("1- {}", DateTimeUtility.showMemoryUsageBYTE());
+        log.info("2- {}", DateTimeUtility.showMemoryUsageKB());
+        log.info("3- {}", DateTimeUtility.showMemoryUsageMB());
     }
 
 }
