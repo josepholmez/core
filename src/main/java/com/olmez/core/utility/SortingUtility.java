@@ -1,6 +1,7 @@
 package com.olmez.core.utility;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import lombok.experimental.UtilityClass;
 public class SortingUtility {
 
     /**
-     * Counting Sorting
+     * COUNTING SORTING
      * <p>
      * First, this creates an array of frequency values of numbers. Then get back
      * the numbers from this array by the number of frequencies.
@@ -19,30 +20,12 @@ public class SortingUtility {
      * @param array list of integer
      * @return sorted list
      */
-    public static List<Integer> sortInt(int[] array) {
+    public static List<Integer> countSort(int[] array) {
         if (array == null) {
             return Collections.emptyList();
         }
         int[] fArray = createFrequencyArray(array);
         return sortFrequencyArray(fArray);
-    }
-
-    /**
-     * Counting Sorting
-     * <p>
-     * First, this creates an array of frequency values of numbers. Then get back
-     * the numbers from this array by the number of frequencies.
-     * </p>
-     * 
-     * @param array list of integer
-     * @return sorted list
-     */
-    public static List<Integer> sortInt(List<Integer> list) {
-        if (list == null) {
-            return Collections.emptyList();
-        }
-        int[] array = list.stream().mapToInt(Integer::intValue).toArray();
-        return sortInt(array);
     }
 
     /**
@@ -82,4 +65,61 @@ public class SortingUtility {
         }
         return max;
     }
+
+    /**
+     * QUICK SORT
+     * <p>
+     * This takes as parameters the array to be sorted, the first and the last
+     * index. First, it checks the indices and continues only if there are still
+     * elements to be sorted. It gets the index of the sorted pivot and uses it to
+     * recursively call the partition() method with the same parameters as the
+     * quickSort() method, but with different indices. The last element is selected
+     * as a pivot arbitrarily. Then, checks each element and swaps it before the
+     * pivot if its value is smaller. By the end of the partitioning, all elements
+     * less than the pivot are on the left of it, and all elements greater than the
+     * pivot is on the right of it. The pivot is at its final sorted position and
+     * the function returns this position.
+     * <p>
+     * 
+     * @param arr to be sorted array
+     * @return sorted array
+     */
+    public static int[] quickSort(int[] arr) {
+        if (arr.length > 1) {
+            quickSort(arr, 0, arr.length - 1);
+        }
+        return arr;
+    }
+
+    private void quickSort(int[] arr, int beginIndex, int endIndex) {
+        if (beginIndex < endIndex) {
+            int partIndex = partition(arr, beginIndex, endIndex);
+
+            quickSort(arr, beginIndex, partIndex - 1);
+            // next comparing
+            quickSort(arr, partIndex + 1, endIndex);
+        }
+    }
+
+    private int partition(int[] arr, int beginIndex, int endIndex) {
+        int i = (beginIndex - 1);
+
+        int pivot = arr[endIndex]; // arbitrary selection
+        for (int j = beginIndex; j < endIndex; j++) {
+            if (arr[j] <= pivot) {
+                i++;
+                swap(arr, i, j);
+            }
+        }
+        swap(arr, i + 1, endIndex);
+        return i + 1;
+    }
+
+    // it switches arr[i] to arr[j]
+    private void swap(int[] arr, int i, int j) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+
 }
