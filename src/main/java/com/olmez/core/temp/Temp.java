@@ -1,23 +1,18 @@
 package com.olmez.core.temp;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-
-import com.olmez.core.utility.SortingUtility;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Temp {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
-        int[] array = { 5, 5, 5, 5, 5, 4, 5, 5, 5, 5 };
-        List<Integer> li = Arrays.stream(array).boxed().toList();
-        System.out.println(SortingUtility.sortInt(li));
+        int arr[] = { 12, 11, 13, 5, 6, 7 };
 
-        System.out.println("Primitive list: " + li);
+        log.info("Sorted array: {}", Arrays.toString(arr));
+
     }
 
 }
