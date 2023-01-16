@@ -1,10 +1,5 @@
 package com.olmez.core.utility;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -21,12 +16,12 @@ public class SortingUtility {
      * @param array list of integer
      * @return sorted list
      */
-    public static List<Integer> countSort(int[] array) {
-        if (array == null) {
-            return Collections.emptyList();
+    public static int[] countSort(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return arr;
         }
-        int[] fArray = createFrequencyArray(array);
-        return sortFrequencyArray(fArray);
+        int[] fre = createFrequencyArray(arr);
+        return sort(fre, arr);
     }
 
     /**
@@ -34,27 +29,29 @@ public class SortingUtility {
      * relevant index in the new array. For example, if you have nine "number of 5",
      * it will be showing in the array like frequency[5]=9.
      * 
-     * @param array numbers
-     * @return frequency list
+     * @param arr numbers
+     * @return array of frequency
      */
-    private int[] createFrequencyArray(int[] array) {
-        int size = getMax(array) + 1;
-        int[] frequencyArray = new int[size];
-        for (int num : array) {
-            frequencyArray[num]++;
+    private int[] createFrequencyArray(int[] arr) {
+        int max = getMax(arr);
+        int[] fre = new int[max + 1];
+        for (int num : arr) {
+            fre[num]++;
         }
-        return frequencyArray;
+        return fre;
     }
 
-    private List<Integer> sortFrequencyArray(int[] frArray) {
-        List<Integer> sortedList = new ArrayList<>();
-        // The index (i) is also the value of the number in the list.
-        for (int i = 0; i < frArray.length; i++) {
-            for (int j = 0; j < frArray[i]; j++) {
-                sortedList.add(i);
+    private int[] sort(int[] fre, int[] arr) {
+        int[] sorted = new int[arr.length];
+        int index = 0;
+        for (int i = 0; i < fre.length; i++) {
+            for (int j = 0; j < fre[i]; j++) {
+                sorted[index] = i;
+                index++;
             }
+
         }
-        return sortedList;
+        return sorted;
     }
 
     private int getMax(int[] array) {
@@ -87,9 +84,10 @@ public class SortingUtility {
      * @return sorted array
      */
     public static int[] quickSort(int[] arr) {
-        if (arr.length > 1) {
-            quickSort(arr, 0, arr.length - 1);
+        if (arr == null || arr.length == 0) {
+            return arr;
         }
+        quickSort(arr, 0, arr.length - 1);
         return arr;
     }
 
@@ -124,8 +122,6 @@ public class SortingUtility {
         arr[j] = temp;
     }
 
-}
-
     /**
      * 3.MERGE SORT
      * ////////////////////////////////////////////////////////////////////////////////////
@@ -146,12 +142,15 @@ public class SortingUtility {
      * @param arr to be sorted array
      * @return sorted array
      */
-    public static int[] arraySort(int[] arr) {
+    public static int[] mergeSort(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return arr;
+        }
         sort(arr, 0, arr.length - 1);
         return arr;
     }
 
-    private static void sort(int[] arr, int iLeft, int iRight) {
+    private void sort(int[] arr, int iLeft, int iRight) {
         if (iLeft < iRight) {
             // Find the middle point
             int mIndex = iLeft + (iRight - iLeft) / 2;
@@ -167,7 +166,7 @@ public class SortingUtility {
 
     // Merges two subarrays of arr[]. First subarray is arr[l..m] and Second
     // subarray is arr[m+1..r]
-    private static void merge(int[] arr, int iLeft, int mIndex, int rIndex) {
+    private void merge(int[] arr, int iLeft, int mIndex, int rIndex) {
         // Find sizes of two subarrays to be merged
         int leftSize = mIndex - iLeft + 1;
         int rightSize = rIndex - mIndex;
@@ -185,8 +184,8 @@ public class SortingUtility {
         /* Merge the temp arrays */
 
         // Initial indexes of first and second subarrays
-        int i = 0, j = 0;
-
+        int i = 0;
+        int j = 0;
         // Initial index of merged subarray array
         int k = iLeft;
         while (i < leftSize && j < rightSize) {
