@@ -42,8 +42,7 @@ public class MorganStanley {
 
     // 3.ORDER TICKETS ******************************************
     public static String orderTickes() {
-        // Using HashMap
-        Map<String, String> ticket = new HashMap<>();
+        Map<String, String> ticket = new HashMap<>(); // K-departure, V-destination
         ticket.put("Bombay", "Delhi");
         ticket.put("Delhi", "Goa");
         ticket.put("Goa", "Chennai");
@@ -138,6 +137,47 @@ public class MorganStanley {
         return "No found non-repeatable char in " + text;
     }
 
+    // 9.ANAGRAM ******************************************
+    public static boolean isAnagram(String first, String second) {
+        if (first == null || first.isEmpty() || second == null || second.isEmpty()) {
+            return false;
+        }
+
+        if (first.length() != second.length()) {
+            return false;
+        }
+
+        char[] f = first.toCharArray();
+        char[] s = second.toCharArray();
+        Arrays.sort(f);
+        Arrays.sort(s);
+
+        return Arrays.equals(f, s);
+    }
+
+    // 10.FIND ALL ANAGRAMS ******************************************
+    public static String findAnagrams(String[] dic) {
+        StringBuilder sb = new StringBuilder();
+        HashSet<String> set = new HashSet<>();
+        for (var w : dic) {
+            String sorted = getSortedChar(w);
+            if (!sorted.isEmpty() && !set.add(sorted)) {
+                sb.append("Anagram: " + new StringBuilder(w).reverse().toString() + " - " + w + "\n");
+            }
+
+        }
+        return sb.toString();
+    }
+
+    private static String getSortedChar(String word) {
+        if (word == null || word.isEmpty()) {
+            return "";
+        }
+        char[] charArray = word.toCharArray();
+        Arrays.sort(charArray);
+        return Arrays.toString(charArray);
+    }
+
     // **************TEST**************TEST**************TEST**************TEST**************TEST**************TEST*/
     public static void main(String[] args) {
 
@@ -178,6 +218,17 @@ public class MorganStanley {
         String text = "zzzzzbbbccccdehhhhiii";
         String res8 = findFirstNonRepeatableChar(text);
         log.info("08-In {}, first non-repeatable char: {}", text, res8);
+
+        // 9.
+        String word1 = "race";
+        String word2 = "care";
+        boolean res9 = isAnagram(word1, word2);
+        log.info("09-Anagram: {} - {} ? {}", word1, word2, res9);
+
+        // 10.
+        String[] dic = { "cat", "dog", "tac", "god", "other" };
+        String res10 = findAnagrams(dic);
+        log.info("10-Anagrams: {}", res10);
     }
 
 }

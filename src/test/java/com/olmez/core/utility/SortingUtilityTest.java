@@ -6,20 +6,29 @@ import org.junit.jupiter.api.Test;
 
 class SortingUtilityTest {
 
-    private int arr[] = { 10, 9, 1, 5, 7, 2, 6, 8, 4, 3 };
-    private int sorted[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-    private int emptyArray[] = {};
+    private int[] arr = { 10, 9, 1, 5, 7, 2, 6, 8, 4, 3 };
+    private int[] sortedArr = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    private int[] emptyArray = {};
+
+    private char[] cArr = { 'z', 'k', 'b', 't', 'd', 'c', 'a', 'n', 'o', 'm', 'c', 'e', 'e', 'g', 'f', 'e', 'a' };
+    private char[] sortedC = { 'a', 'a', 'b', 'c', 'c', 'd', 'e', 'e', 'e', 'f', 'g', 'k', 'm', 'n', 'o', 't', 'z' };
 
     @Test
     void testCountSort() {
+        // int array
+        int[] iRes = SortingUtility.countSort(arr);
+        assertThat(iRes).isEqualTo(sortedArr);
+
+        // char array
+        char[] cRes = SortingUtility.countSort(cArr);
+        assertThat(cRes).isEqualTo(sortedC);
+
         // for null value
-        assertThat(SortingUtility.countSort(null)).isNull();
+        arr = null;
+        assertThat(SortingUtility.countSort(arr)).isNull();
 
         // for empty array
         assertThat(SortingUtility.countSort(emptyArray)).isEmpty();
-
-        var result = SortingUtility.countSort(arr);
-        assertThat(result).isEqualTo(sorted);
     }
 
     @Test
@@ -31,7 +40,7 @@ class SortingUtilityTest {
         assertThat(SortingUtility.quickSort(emptyArray)).isEmpty();
 
         var result = SortingUtility.quickSort(arr);
-        assertThat(result).isEqualTo(sorted);
+        assertThat(result).isEqualTo(sortedArr);
     }
 
     @Test
@@ -43,7 +52,7 @@ class SortingUtilityTest {
         assertThat(SortingUtility.mergeSort(emptyArray)).isEmpty();
 
         var result = SortingUtility.mergeSort(arr);
-        assertThat(result).isEqualTo(sorted);
+        assertThat(result).isEqualTo(sortedArr);
     }
 
 }
