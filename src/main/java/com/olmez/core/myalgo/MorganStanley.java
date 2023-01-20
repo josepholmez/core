@@ -42,8 +42,7 @@ public class MorganStanley {
 
     // 3.ORDER TICKETS ******************************************
     public static String orderTickes() {
-        // Using HashMap
-        Map<String, String> ticket = new HashMap<>();
+        Map<String, String> ticket = new HashMap<>(); // K-departure, V-destination
         ticket.put("Bombay", "Delhi");
         ticket.put("Delhi", "Goa");
         ticket.put("Goa", "Chennai");

@@ -2,6 +2,17 @@ package com.olmez.core.utility;
 
 import lombok.experimental.UtilityClass;
 
+/**
+ * It is used to sort very large arrays consisting of integers or chars.
+ * <p>
+ * Arrays.sort(arr) or Arrays.sort(arr, Collections.reverseOrder()) for
+ * non-large arrays
+ * </p>
+ * <p>
+ * Collections.sort(list) or Collections.sort(list, Collections.reverseOrder())
+ * is used.
+ * </p>
+ */
 @UtilityClass
 public class SortingUtility {
 
@@ -62,6 +73,27 @@ public class SortingUtility {
             }
         }
         return max;
+    }
+
+    // for char array
+    public static char[] countSort(char[] arr) {
+        if (arr == null || arr.length == 0) {
+            return arr;
+        }
+
+        char[] freArray = new char[256];
+        for (var c : arr) {
+            freArray[c]++;
+        }
+
+        char[] sorted = new char[arr.length];
+        int cnt = 0;
+        for (int i = 0; i < freArray.length; i++) {
+            for (int j = 0; j < freArray[i]; j++) {
+                sorted[cnt++] = (char) i;
+            }
+        }
+        return sorted;
     }
 
     /**
