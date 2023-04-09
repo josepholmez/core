@@ -1,20 +1,18 @@
 package com.olmez.core.model;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 import org.springframework.lang.Nullable;
 
 import com.olmez.core.model.enums.CurrencyCode;
 
 import jakarta.persistence.Entity;
-
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class CurrencyInfo extends BaseObject {
 
@@ -38,5 +36,15 @@ public class CurrencyInfo extends BaseObject {
     @Override
     public String toString() {
         return String.format("Currency Info on %s", date);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, date);
     }
 }

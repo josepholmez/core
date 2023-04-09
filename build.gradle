@@ -38,6 +38,8 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	// for test db
+	runtimeOnly 'com.h2database:h2'
 }
 
 tasks.named('test') {

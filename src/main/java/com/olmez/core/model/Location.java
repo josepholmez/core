@@ -1,9 +1,7 @@
 package com.olmez.core.model;
 
 import java.time.LocalDate;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.Lob;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators.PropertyGenerator;
@@ -11,13 +9,13 @@ import com.olmez.core.utility.DistanceUnits;
 import com.olmez.core.utility.MathUtils;
 import com.olmez.core.utility.StringUtility;
 
-import lombok.Getter;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Lob;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @JsonIdentityInfo(generator = PropertyGenerator.class, property = "name")
 public class Location extends BaseObject {
@@ -91,6 +89,16 @@ public class Location extends BaseObject {
 		}
 		return address.toString();
 
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return super.equals(obj);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name);
 	}
 
 }

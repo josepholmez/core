@@ -1,11 +1,14 @@
 package com.olmez.core.repositories;
 
-import com.olmez.core.model.CurrencyInfo;
-import org.springframework.data.jpa.repository.Query;
-
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import com.olmez.core.model.CurrencyInfo;
+
+@Repository
 public interface CurrencyInfoRepository extends BaseObjectRepository<CurrencyInfo> {
 
     @Query("SELECT t FROM CurrencyInfo t WHERE t.date = ?1 AND t.deleted = false ORDER BY t.date DESC")

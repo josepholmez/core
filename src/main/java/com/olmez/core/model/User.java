@@ -1,21 +1,19 @@
 package com.olmez.core.model;
 
-import jakarta.persistence.Entity;
+import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators.PropertyGenerator;
 import com.olmez.core.model.enums.UserType;
 import com.olmez.core.utility.DateTimeUtility;
 import com.olmez.core.utility.StringUtility;
 
-import lombok.Getter;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@Getter
-@Setter
-@JsonIdentityInfo(generator = PropertyGenerator.class, property = "username")
+@Table(name = "users") // Required to solve the conflict "user" in h2 db
+@Data
 @NoArgsConstructor
 public class User extends BaseObject {
 
@@ -53,24 +51,25 @@ public class User extends BaseObject {
 	}
 
 	public boolean isAdmin() {
-		return UserType.ADMIN.equals(getUserType());
-	}
-
-	public String getTimeZone() {
-		return (timeZone == null) ? DateTimeUtility.DEFAULT_ZONE_ID_KEY : timeZone;
-	}
-
-	public boolean isRegular() {
-		return UserType.REGULAR.equals(getUserType());
-	}
-
-	public static boolean isValid(User user) {
-		return !StringUtility.isEmpty(user.getUsername()) && !StringUtility.isEmpty(user.getFirstName())
-				&& !StringUtility.isEmpty(user.getLastName());
+		return userType == UserType.ADMIN;
 	}
 
 	public String getRole() {
 		return userType.getRole();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return super.equals(obj);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, username, email);
+	}
+
+	public String getTimeZone() {
+		return (timeZone == null) ? DateTimeUtility.DEFAULT_ZONE_ID_KEY : timeZone;
 	}
 
 }

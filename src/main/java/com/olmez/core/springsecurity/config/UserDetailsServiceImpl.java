@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 import com.olmez.core.model.User;
 import com.olmez.core.repositories.UserRepository;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Slf4j
 public class UserDetailsServiceImpl implements UserDetailsService {
 
