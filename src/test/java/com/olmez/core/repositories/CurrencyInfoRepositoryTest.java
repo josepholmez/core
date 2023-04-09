@@ -1,36 +1,34 @@
 package com.olmez.core.repositories;
 
-import com.olmez.core.CoreApplicationTest;
-import com.olmez.core.model.CurrencyInfo;
-import com.olmez.core.services.TestRepoCleanerService;
-import com.olmez.core.utility.TestUtility;
-import org.junit.jupiter.api.BeforeEach;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.time.LocalDate;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.LocalDate;
+import com.olmez.core.CoreTestApplication;
+import com.olmez.core.model.CurrencyInfo;
+import com.olmez.core.utility.TestUtility;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-/**
- * Test classes use test database!
- */
-@SpringBootTest(classes = CoreApplicationTest.class)
-@TestPropertySource(TestUtility.SOURCE_PROPERTIES)
-@ActiveProfiles(TestUtility.PROFILE)
+@SpringBootTest(classes = CoreTestApplication.class)
+@ExtendWith(SpringExtension.class)
+@ActiveProfiles(TestUtility.TEST_PROFILE)
+@TestPropertySource(TestUtility.TEST_SOURCE)
 class CurrencyInfoRepositoryTest {
 
 	@Autowired
 	private CurrencyInfoRepository repository;
-	@Autowired
-	private TestRepoCleanerService cleanerService;
 
-	@BeforeEach
-	public void setup() {
-		cleanerService.clear();
+	@AfterEach
+	void clean() {
+		repository.deleteAll();
 	}
 
 	@Test

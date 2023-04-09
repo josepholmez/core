@@ -5,8 +5,14 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class TestUtility {
 
-    public static final String SOURCE_PROPERTIES = "/test-app.properties";
+    /**
+     * src/test/src/test/resources/application-test.yml
+     */
+    public static final String TEST_SOURCE = "classpath:/application-test.yml";
 
-    public static final String PROFILE = "test";
+    /**
+     * The test profile is "test" as defined in "build.gradle".
+     */
+    public static final String TEST_PROFILE = "test";
 
 }

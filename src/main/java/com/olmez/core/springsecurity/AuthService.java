@@ -1,6 +1,7 @@
 package com.olmez.core.springsecurity;
 
 import java.rmi.UnexpectedException;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -10,51 +11,67 @@ import org.springframework.stereotype.Service;
 import com.olmez.core.model.User;
 import com.olmez.core.repositories.UserRepository;
 import com.olmez.core.springsecurity.config.UserDetailsImpl;
+import com.olmez.core.springsecurity.securityutiliy.AuthRequest;
 import com.olmez.core.springsecurity.securityutiliy.JwtUtility;
 import com.olmez.core.springsecurity.securityutiliy.PasswordUtility;
-import com.olmez.core.springsecurity.securityutiliy.AuthRequest;
-import com.olmez.core.springsecurity.securityutiliy.AuthResponse;
 import com.olmez.core.springsecurity.securityutiliy.RegisterRequest;
+import com.olmez.core.utility.StringUtility;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Slf4j
 public class AuthService {
 
     private final UserRepository userRepository;
     private final AuthenticationManager authManager;
 
-    public AuthResponse register(RegisterRequest request) {
-        String errorMsg = null;
-        User user = userRepository.findByUsername(request.getUsername());
+    // Sign Up ********************************************
+    public boolean register(RegisterRequest request) {
+        User user = checkExistingUser(request);
         if (user != null) {
-            errorMsg = String.format("Error: %s is already in use!", request.getUsername());
+            log.error("Error: {} is already in use!", user.getName());
         }
-        // Create a new user's account
-        user = new User(request.getUsername(), request.getFirstName(), request.getLastName(),
-                request.getEmail());
-        user.setPasswordHash(PasswordUtility.hashPassword(request.getPassword()));
-        user = userRepository.save(user);
-        return generateResponse(user, null, errorMsg);
+        return createNewUser(request);
     }
 
+    // Sign In *************** Generate a token for the user to login***************
     public AuthResponse authenticate(AuthRequest request) throws UnexpectedException {
         UserDetailsImpl userDetailsImpl = grantAuthentication(request);
-        User curUser = userDetailsImpl.getUser();
-        String errorMsg = null;
-        if (curUser == null) {
-            errorMsg = "User not found with " + request.getUsername();
+        User user = userDetailsImpl.getUser();
+        if (user == null) {
+            log.error("User not found with {}", request.getUsername());
+            return null;
         }
-        String jwt = createJWTForUser(userDetailsImpl);
-        log.info("Granted jwt:{} to user:{}", jwt, curUser);
-        return generateResponse(curUser, jwt, errorMsg);
+        return createJWTForUser(userDetailsImpl);
+    }
+
+    //
+    private User checkExistingUser(RegisterRequest request) {
+        if (request.getEmail() != null) {
+            var oUser = userRepository.findByEmail(request.getEmail());
+            return oUser.isPresent() ? oUser.get() : null;
+        }
+        if (request.getUsername() != null) {
+            return userRepository.findByUsername(request.getUsername());
+        }
+        return null;
+    }
+
+    private boolean createNewUser(RegisterRequest request) {
+        User user = new User(request.getFirstName(), request.getLastName(), request.getUsername(), request.getEmail());
+        user.setPasswordHash(PasswordUtility.hashPassword(request.getPassword()));
+        return userRepository.save(user) != null;
     }
 
     private UserDetailsImpl grantAuthentication(AuthRequest signinRequest) throws UnexpectedException {
         String username = signinRequest.getUsername();
+        if (StringUtility.isEmpty(username)) {
+            username = signinRequest.getEmail();
+        }
         String password = signinRequest.getPassword();
         var aToken = new UsernamePasswordAuthenticationToken(username, password);
         Authentication authResult = authManager.authenticate(aToken);
@@ -70,20 +87,18 @@ public class AuthService {
         return (UserDetailsImpl) principal;
     }
 
-    private String createJWTForUser(UserDetails userDetails) {
-        return JwtUtility.generateToken(userDetails);
+    private AuthResponse createJWTForUser(UserDetails userDetails) {
+        String jwt = JwtUtility.generateToken(userDetails);
+        return new AuthResponse(jwt);
     }
 
-    private AuthResponse generateResponse(User user, String token, String error) {
-        AuthResponse res = new AuthResponse();
-        res.setToken(token);
-        res.setErrorMessage(error);
-        if (user != null) {
-            res.setUsername(user.getUsername());
-            res.setEmail(user.getEmail());
-            res.setRole(user.getRole());
+    @Data
+    class AuthResponse {
+        private String token;
+
+        public AuthResponse(String token) {
+            this.token = token;
         }
-        return res;
     }
 
 }

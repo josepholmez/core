@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import com.olmez.core.model.User;
 import com.olmez.core.model.enums.UserType;
 import com.olmez.core.utility.StringUtility;
 
+@Repository
 public interface UserRepository extends BaseObjectRepository<User> {
 
     @Query("SELECT u FROM User u WHERE u.username = ?1 AND u.deleted = false")
