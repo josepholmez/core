@@ -3,7 +3,6 @@ package com.olmez.core.model;
 import java.util.Objects;
 
 import com.olmez.core.model.enums.UserType;
-import com.olmez.core.utility.DateTimeUtility;
 import com.olmez.core.utility.StringUtility;
 
 import jakarta.persistence.Entity;
@@ -23,22 +22,18 @@ public class User extends BaseObject {
 	private String email;
 	private UserType userType = UserType.REGULAR;
 	private String passwordHash;
-	private String timeZone;
 
-	public User(String username, String firstName, String lastName) {
-		this(username, firstName, lastName, username + "@no-email.com", UserType.REGULAR);
+	public User(String firstName, String lastName, String username, String email) {
+		this(firstName, lastName, username, email, UserType.REGULAR);
 	}
 
-	public User(String username, String firstName, String lastName, String email) {
-		this(username, firstName, lastName, email, UserType.REGULAR);
-	}
-
-	public User(String username, String firstName, String lastName, String email, UserType userType) {
-		this.username = username;
+	public User(String firstName, String lastName, String username, String email,
+			UserType userType) {
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.userType = userType;
+		this.username = username;
 		this.email = email;
+		this.userType = (userType != null) ? userType : UserType.REGULAR;
 	}
 
 	public String getName() {
@@ -66,10 +61,6 @@ public class User extends BaseObject {
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, username, email);
-	}
-
-	public String getTimeZone() {
-		return (timeZone == null) ? DateTimeUtility.DEFAULT_ZONE_ID_KEY : timeZone;
 	}
 
 }

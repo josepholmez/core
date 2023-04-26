@@ -2,7 +2,7 @@ package com.olmez.core.repositories;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,20 +24,28 @@ class UserRepositoryTest {
     @Autowired
     private UserRepository repository;
 
-    @AfterEach
+    private User user = new User("First", "Last", "uname", "email");
+    private User user2 = new User("First2", "Last2", "uname2", "email2");
+
+    @BeforeEach
     void clean() {
         repository.deleteAll();
     }
 
     @Test
+    void testFindAll() {
+        // act
+        var list = repository.findAll();
+        // assert
+        assertThat(list).isEmpty();
+    }
+
+    @Test
     void testFindByUsername() {
         // arrange
-        User user = new User("uname", "First", "Last");
         user = repository.save(user);
-
         // act
         var users = repository.findUsersByUsername(user.getUsername());
-
         // assert
         assertThat(users).hasSize(1);
         assertThat(users.get(0)).isEqualTo(user);
@@ -46,16 +54,12 @@ class UserRepositoryTest {
     @Test
     void testGetByUsername() {
         // arrange
-        User user1 = new User("uname", "First", "Last");
-        user1 = repository.save(user1);
-        User user2 = new User("uname2", "First2", "Last2");
+        user = repository.save(user);
         user2 = repository.save(user2);
-
         // act
-        var user = repository.findByUsername(user1.getUsername());
-
+        var resUser = repository.findByUsername(user.getUsername());
         // assert
-        assertThat(user).isNotNull().isEqualTo(user1);
+        assertThat(user).isNotNull().isEqualTo(resUser);
     }
 
 }

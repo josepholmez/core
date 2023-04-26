@@ -1,6 +1,7 @@
 package com.olmez.core.services.impl;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -32,7 +33,7 @@ public class ScheduledServiceImpl implements ScheduledService {
     public void dailyUpdateCurrencyData() throws InterruptedException {
         log.info("Currency data are being pulled...");
         try {
-            currencyService.update();
+            currencyService.update(LocalDate.now());
             log.info("Pulling currencies data is completed.");
         } catch (IOException e) {
             log.info("Failed to currency data pulling. {}", e.getMessage());
