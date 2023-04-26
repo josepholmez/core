@@ -27,13 +27,13 @@ public class ScheduledServiceImpl implements ScheduledService {
      * 
      * @throws Exception
      */
-    @Scheduled(cron = "0 45 17 * * ?") // 17:45:00 or 5:45:00 PM
+    @Scheduled(cron = "0 45 18 * * ?") // 17:45:00 or 5:45:00 PM
     @Override
     @Transactional
     public void dailyUpdateCurrencyData() throws InterruptedException {
         log.info("Currency data are being pulled...");
         try {
-            currencyService.update(LocalDate.now());
+            currencyService.update(LocalDate.now().minusMonths(1), LocalDate.now());
             log.info("Pulling currencies data is completed.");
         } catch (IOException e) {
             log.info("Failed to currency data pulling. {}", e.getMessage());

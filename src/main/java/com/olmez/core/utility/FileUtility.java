@@ -113,4 +113,9 @@ public class FileUtility {
 	}
 	// *******************************************************************************************************
 
+	public static <T> T readFileRT(String sourceUrl, Class<T> objType) throws IOException {
+		InputStream is = HttpClientUtility.getResponseAsInputStream(sourceUrl);
+		return MAPPER.readValue(is, objType);
+	}
+
 }
