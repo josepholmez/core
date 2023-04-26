@@ -84,7 +84,6 @@ public class LocationServiceImpl implements LocationService {
         target.setGoogleAddress(source.getGoogleAddress());
         target.setTimeZone(source.getTimeZone());
         target.setDescription(source.getDescription());
-        target.setWeatherUpdatedOn(source.getWeatherUpdatedOn());
         return target;
     }
 

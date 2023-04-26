@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import com.olmez.core.model.CurrencyInfo;
-import com.olmez.core.repositories.CurrencyInfoRepository;
+import com.olmez.core.model.CurrencyRate;
+import com.olmez.core.model.enums.CurrencyCode;
+import com.olmez.core.repositories.CurrencyRateRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -21,141 +24,165 @@ import lombok.extern.slf4j.Slf4j;
 public class CurrencyServiceImpl implements CurrencyService {
 
     private final CurrencyAPIService apiService;
-    private final CurrencyInfoRepository curInfoRepository;
+    private final CurrencyRateRepository repository;
 
     @Override
-    @Transactional
-    public CurrencyInfo update(LocalDate date) throws IOException, InterruptedException {
-        CurrencyInfo existing = curInfoRepository.findByDate(date);
-
-        if ((existing != null) && (!date.isEqual(LocalDate.now()))) {
-            log.info("Data exist on {}", existing.getDate());
-            return existing;
-        }
-
-        CurrencyInfo info = apiService.update(date);
-        if (info != null) {
-            if ((existing != null) && (info.getDate().isEqual(LocalDate.now()))) {
-                info = updateExisting(existing, info);
-            }
-            info = curInfoRepository.save(info);
-            log.info("---Updated currency data - {}", info);
-        }
-        return info;
+    public List<CurrencyRate> checkLastWeek() throws InterruptedException, IOException {
+        return update(LocalDate.now().minusWeeks(1), LocalDate.now());
     }
 
     @Override
-    @Transactional
-    public CurrencyInfo update() throws IOException, InterruptedException {
-        return update(LocalDate.now());
-    }
-
-    @Override
-    @Transactional
-    public List<CurrencyInfo> update(LocalDate startDateInclusive, LocalDate endDateInclusive)
+    public List<CurrencyRate> update(LocalDate startInclusive, LocalDate endInclusive)
             throws InterruptedException, IOException {
-        if (endDateInclusive == null || endDateInclusive.isAfter(LocalDate.now())) {
-            endDateInclusive = LocalDate.now();
+        if (endInclusive == null || endInclusive.isAfter(LocalDate.now())) {
+            endInclusive = LocalDate.now();
         }
 
-        if (startDateInclusive == null) {
-            startDateInclusive = endDateInclusive;
+        if (startInclusive == null) {
+            startInclusive = endInclusive;
         }
 
-        if (endDateInclusive.isBefore(startDateInclusive)) {
+        if (endInclusive.isBefore(startInclusive)) {
             return Collections.emptyList();
         }
 
         // max 99 call pear day
-        if (startDateInclusive.isBefore(endDateInclusive.minusMonths(3))) {
-            startDateInclusive = endDateInclusive.minusMonths(3);
+        if (startInclusive.isBefore(endInclusive.minusMonths(3))) {
+            startInclusive = endInclusive.minusMonths(3);
         }
 
-        List<CurrencyInfo> infoList = new ArrayList<>();
-        LocalDate curDate = startDateInclusive;
+        List<CurrencyRate> rates = new ArrayList<>();
+        LocalDate curDate = startInclusive;
 
-        while (curDate.isBefore(endDateInclusive.plusDays(1))) {
-            infoList.add(update(curDate));
+        while (curDate.isBefore(endInclusive.plusDays(1))) {
+            var rate = update(curDate);
+            if (rate != null) {
+                rates.add(update(curDate));
+            }
             curDate = curDate.plusDays(1);
         }
-        return infoList;
-    }
 
-    // *** This section for CurrencyRController ***
-    @Override
-    public List<CurrencyInfo> getCurrencyInfos() {
-        return curInfoRepository.findAll();
-    }
-
-    @Override
-    public boolean addCurrencyInfo(CurrencyInfo newInfo) {
-        if (newInfo == null) {
-            return false;
+        if (rates.isEmpty()) {
+            log.info("Completed! The data are already up to date.");
+        } else {
+            log.info("Completed! Received data for {} days", rates.size());
         }
-        newInfo = curInfoRepository.save(newInfo);
-        return newInfo.getId() != null;
+
+        return rates;
     }
 
     @Override
-    public CurrencyInfo getCurrencyInfoById(Long ciId) {
-        if (ciId == null) {
+    @Transactional
+    public CurrencyRate update(LocalDate date) throws IOException, InterruptedException {
+        CurrencyRate existing = repository.findByDate(date);
+        if (existing != null) {
+            log.info("Data exist on {}", existing.getDate());
             return null;
         }
-        return curInfoRepository.getById(ciId);
+
+        CurrencyRate rate = apiService.update(date);
+        if (rate != null) {
+            rate = repository.save(rate);
+        }
+        return rate;
+    }
+
+    // *** This section for CurrencyRestController ***
+    @Override
+    public List<CurrencyRate> getAllRates() {
+        return repository.findAll();
     }
 
     @Override
-    public boolean deleteCurrencyInfo(Long ciId) {
-        CurrencyInfo existing = getCurrencyInfoById(ciId);
+    public boolean createCurrencyRate(CurrencyRate rate) {
+        return repository.save(rate) != null;
+    }
+
+    @Override
+    public CurrencyRate findCurrencyRateById(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return repository.getById(id);
+    }
+
+    @Override
+    public boolean deleteCurrencyRate(Long ciId) {
+        CurrencyRate existing = findCurrencyRateById(ciId);
         if (existing == null) {
             return false;
         }
-        curInfoRepository.deleted(existing);
-        log.info("Deleted! {}", existing);
-        return true;
+        repository.deleted(existing);
+        return existing.isDeleted();
     }
 
     @Override
-    public CurrencyInfo updateCurrencyInfo(Long id, CurrencyInfo givenInfo) {
-        CurrencyInfo existing = getCurrencyInfoById(id);
+    public CurrencyRate updateCurrencyRate(Long id, CurrencyRate rateDetails) {
+        CurrencyRate existing = findCurrencyRateById(id);
         if (existing == null) {
             return null;
         }
-        updateExisting(existing, givenInfo);
-        curInfoRepository.save(existing);
-        log.info("Updated! {}", existing);
-        return existing;
+        updateExisting(existing, rateDetails);
+        return repository.save(existing);
     }
 
     @Override
-    public CurrencyInfo getCurrencyInfoByDate(LocalDate date) {
+    public CurrencyRate findCurrencyRateByDate(LocalDate date) {
         if (date == null) {
             return null;
         }
-        return curInfoRepository.findByDate(date);
+        return repository.findByDate(date);
     }
 
-    @Override
-    public List<CurrencyInfo> update(int numOfDays) throws InterruptedException, IOException {
-        return update(LocalDate.now().minusDays(numOfDays), LocalDate.now());
-
-    }
-
-    private CurrencyInfo updateExisting(CurrencyInfo existing, CurrencyInfo given) {
+    private CurrencyRate updateExisting(CurrencyRate existing, CurrencyRate given) {
         existing.setDate(given.getDate());
         existing.setAmount(given.getAmount());
         existing.setBaseCode(given.getBaseCode());
-        existing.setAUD(given.getAUD());
-        existing.setCAD(given.getCAD());
-        existing.setCHF(given.getCHF());
-        existing.setEUR(given.getEUR());
-        existing.setGBP(given.getGBP());
-        existing.setUSD(given.getUSD());
-        existing.setJPY(given.getJPY());
-        existing.setRUB(given.getRUB());
-        existing.setTRY(given.getTRY());
-        log.info("Updated existing data on {}", existing.getDate());
+        existing.setCad(given.getCad());
+        existing.setEur(given.getEur());
+        existing.setGbp(given.getGbp());
+        existing.setUsd(given.getUsd());
+        existing.setJpy(given.getJpy());
+        existing.setTryy(given.getTryy());
+        log.info("Updated existing currency rate: {}", existing.getDate());
         return existing;
+    }
+
+    @Override
+    public Double convert(CurrencyWrapper curWrapper) {
+        if (curWrapper == null) {
+            return null;
+        }
+        var map = rateMap(curWrapper.getDate());
+        if (map.isEmpty()) {
+            return null;
+        }
+
+        var fromCode = curWrapper.getFrom();
+        var toCode = curWrapper.getTo();
+        var amount = curWrapper.getAmount();
+
+        Double converted;
+        if (fromCode == CurrencyCode.USD) {
+            converted = amount * map.get(toCode);
+        } else {
+            converted = (amount * map.get(toCode)) / map.get(fromCode);
+        }
+        return converted;
+    }
+
+    private Map<CurrencyCode, Double> rateMap(LocalDate date) {
+        Map<CurrencyCode, Double> map = new HashMap<>();
+        var rate = repository.findByDate(date);
+        if (rate != null) {
+            map.put(CurrencyCode.CAD, rate.getCad());
+            map.put(CurrencyCode.EUR, rate.getEur());
+            map.put(CurrencyCode.GBP, rate.getGbp());
+            map.put(CurrencyCode.JPY, rate.getJpy());
+            map.put(CurrencyCode.TRY, rate.getTryy());
+            map.put(CurrencyCode.USD, rate.getUsd());
+        }
+        return map;
     }
 
 }

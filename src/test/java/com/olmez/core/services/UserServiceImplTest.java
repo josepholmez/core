@@ -14,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.olmez.core.model.User;
 import com.olmez.core.repositories.UserRepository;
 import com.olmez.core.services.impl.UserServiceImpl;
-import com.olmez.core.temp.MockedUser;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
@@ -28,7 +27,7 @@ class UserServiceImplTest {
 
     @Test
     void testGetUsers() {
-        user = new MockedUser("First", "Last");
+        user = new User("First", "Last", "uname", "email");
         when(userRepository.findAll()).thenReturn(List.of(user));
 
         var users = service.getUsers();

@@ -1,12 +1,7 @@
 package com.olmez.core.model;
 
-import java.time.LocalDate;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators.PropertyGenerator;
-import com.olmez.core.utility.DistanceUnits;
-import com.olmez.core.utility.MathUtils;
 import com.olmez.core.utility.StringUtility;
 
 import jakarta.persistence.Entity;
@@ -17,7 +12,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-@JsonIdentityInfo(generator = PropertyGenerator.class, property = "name")
 public class Location extends BaseObject {
 
 	private String name;
@@ -31,7 +25,6 @@ public class Location extends BaseObject {
 	private Double latitude;
 	private Double longitude;
 	private String timeZone;
-	private LocalDate weatherUpdatedOn = LocalDate.now().minusWeeks(1);
 	@Lob
 	private String description = "";
 
@@ -47,12 +40,6 @@ public class Location extends BaseObject {
 
 	public boolean hasLatitudeLongitude() {
 		return (latitude != null) && (longitude != null);
-	}
-
-	public Double distanceToLocation(Double givenLatitude, Double givenLongitude) {
-		return hasLatitudeLongitude()
-				? MathUtils.distance(latitude, longitude, givenLatitude, givenLongitude, DistanceUnits.KM)
-				: null;
 	}
 
 	@Override

@@ -22,26 +22,33 @@ public class FileUtility {
 
 	// READ FILE BASED ON JAVA CLASSES *********************************************
 	/**
-	 * This allows reading the file given its url according to the class type
+	 * This allows to read the test file on the project according to the class type
+	 * specified.
+	 * 
+	 * @param <T>     class type
+	 * @param source  the url of the file on the project resources (e.g.
+	 *                "/currency/rates.json")
+	 * @param objType
+	 * @return An object of the given object type
+	 * @throws IOException
+	 */
+	public static <T> T readFileOnTestMode(String source, Class<T> objType) throws IOException {
+		InputStream is = FileUtility.class.getResourceAsStream(source);
+		return MAPPER.readValue(is, objType);
+	}
+
+	/**
+	 * This allows to read the file on the web according to the class type
 	 * specified.
 	 * 
 	 * @param <T>       class type
-	 * @param sourceUrl the url of the file to be read (e.g. "/currency/rates.json")
+	 * @param sourceUrl the url on the web (e.g. "api/v1/currency/rates.json")
 	 * @param objType
 	 * @return An object of the given object type
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public static <T> T readFile(boolean testMode, String sourceUrl, Class<T> objType)
-			throws IOException, InterruptedException {
-		if (testMode) {
-			InputStream is = FileUtility.class.getResourceAsStream(sourceUrl);
-			return MAPPER.readValue(is, objType);
-		}
-		return readFile(sourceUrl, objType);
-	}
-
-	private <T> T readFile(String sourceUrl, Class<T> objType) throws IOException, InterruptedException {
+	public static <T> T readFile(String sourceUrl, Class<T> objType) throws IOException, InterruptedException {
 		InputStream is = HttpClientUtility.getResponseAsStream(sourceUrl);
 		return MAPPER.readValue(is, objType);
 	}
@@ -105,5 +112,10 @@ public class FileUtility {
 		return false;
 	}
 	// *******************************************************************************************************
+
+	public static <T> T readFileRT(String sourceUrl, Class<T> objType) throws IOException {
+		InputStream is = HttpClientUtility.getResponseAsInputStream(sourceUrl);
+		return MAPPER.readValue(is, objType);
+	}
 
 }

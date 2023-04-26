@@ -3,12 +3,12 @@ package com.olmez.core.currency;
 import java.io.IOException;
 import java.time.LocalDate;
 
-import com.olmez.core.model.CurrencyInfo;
+import com.olmez.core.model.CurrencyRate;
 
 public interface CurrencyAPIService {
 
-    CurrencyInfo update() throws IOException, InterruptedException;
+    CurrencyRate update() throws IOException, InterruptedException;
 
-    CurrencyInfo update(LocalDate date) throws IOException, InterruptedException;
+    CurrencyRate update(LocalDate date) throws IOException, InterruptedException;
 
 }

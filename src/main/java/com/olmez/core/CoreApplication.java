@@ -7,11 +7,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.olmez.core.model.User;
 import com.olmez.core.repositories.UserRepository;
 
 @SpringBootApplication
+@EnableScheduling
 public class CoreApplication {
 
 	private Logger log = LoggerFactory.getLogger(getClass());

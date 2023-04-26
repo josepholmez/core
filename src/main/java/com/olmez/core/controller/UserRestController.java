@@ -2,6 +2,9 @@ package com.olmez.core.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,71 +16,75 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.olmez.core.model.PasswordWrapper;
 import com.olmez.core.model.User;
 import com.olmez.core.services.UserService;
 
-import lombok.RequiredArgsConstructor;
-
 @RestController
-@RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/api/v1/users")
 @CrossOrigin(origins = "http://localhost:4200") // This allows to talk to port:5000 (ui-backend)
 public class UserRestController {
 
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
 
-    // READ = GET
-    @GetMapping("/all")
-    public List<User> getUsers() {
-        return userService.getUsers();
-    }
-
-    // GET = READ - via @PathVariable
-    @GetMapping("/{id}")
-    public User getUserByWithPath(@PathVariable("id") long id) {
-        return userService.getUserById(id);
-    }
-
-    // GET = READ - via @RequestParam
+    // GET all
     @GetMapping()
-    public User getUserByIdWithParam(@RequestParam long id) {
-        return userService.getUserById(id);
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.getUsers();
+        return ResponseEntity.ok(users);
     }
 
-    // GET = READ - via @RequestParam
-    @GetMapping("/")
-    public User getUserByUsername(@RequestParam String username) {
-        return userService.getUserByUsername(username);
+    // CREATE
+    @PostMapping()
+    public ResponseEntity<Boolean> addUser(@RequestBody User user) {
+        boolean res = userService.addUser(user);
+        return (res) ? new ResponseEntity<>(HttpStatus.CREATED) : ResponseEntity.badRequest().body(res);
     }
 
-    // CREATE = POST
-    @PostMapping("/add")
-    public boolean addUser(@RequestBody User user) {
-        return userService.addUser(user);
+    // GET By Id using @PathVariable
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserByIdPath(@PathVariable Long id) {
+        User user = userService.getUserById(id);
+        return ResponseEntity.ok(user);
     }
 
-    // UPDATE = PUT - via @PathVariable
-    @PutMapping("/update/{userId}")
-    public User updateUserWithPath(@PathVariable("userId") long id, @RequestBody User model) {
-        return userService.updateUser(id, model);
+    // UPDATE
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+        User updated = userService.updateUser(id, user);
+        return ResponseEntity.ok(updated);
     }
 
-    // UPDATE = PUT - via @RequestParam
-    @PutMapping("/update")
-    public User updateUserWithParam(@RequestBody User model) {
-        return userService.updateUser(model);
+    // UPDATE
+    @PutMapping()
+    public ResponseEntity<User> updateUser(@RequestBody User user) {
+        if (user == null || user.getId() == null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        User updated = userService.updateUser(user.getId(), user);
+        return ResponseEntity.ok(updated);
     }
 
-    // DELETE = DELETE - via @PathVariable
-    @DeleteMapping("/delete/{userId}")
-    public boolean deleteUser(@PathVariable("userId") long id) {
-        return userService.deleteUser(id);
+    // DELETE using @PathVariable
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteUserById(@PathVariable Long id) {
+        boolean res = userService.deleteUser(id);
+        return ResponseEntity.ok(res);
     }
 
-    // DELETE = DELETE - via @RequestParam
-    @DeleteMapping("/delete")
-    public boolean deleteUserByParam(@RequestParam long id) {
-        return userService.deleteUser(id);
+    // GET By username
+    @GetMapping("/username")
+    public ResponseEntity<User> getUserByUsername(@RequestParam("username") String username) {
+        User user = userService.getUserByUsername(username);
+        return ResponseEntity.ok(user);
+    }
+
+    // UPDATE Password
+    @PutMapping("/pass")
+    public ResponseEntity<Boolean> updatePassword(@RequestBody PasswordWrapper passWrapper) {
+        boolean res = userService.updateUserPassword(passWrapper);
+        return ResponseEntity.ok(res);
     }
 
 }
